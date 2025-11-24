@@ -55,7 +55,7 @@ export const work = sqliteTable('work', {
 // インプレッション
 export const impression = sqliteTable('impression', {
   id,
-  workId: integer('work_id').references(() => work.id),
+  workNo: integer('work_no').notNull(),
   hash: text('hash').notNull(),
   name: text('name').default(''),
   country: text('country'),

@@ -14,7 +14,7 @@
 		"upload": "opennextjs-cloudflare build && opennextjs-cloudflare upload",
 		"preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
 		"migration:generate": "drizzle-kit generate",
-    "migration:apply": "wrangler d1 migrations apply drizzle-d1-script --local",
+    "migration:apply": "wrangler d1 migrations apply mochiuni_stats_db --local",
 		"cf-typegen": "wrangler types --env-interface CloudflareEnv ./cloudflare-env.d.ts"
 	},
 	"dependencies": {

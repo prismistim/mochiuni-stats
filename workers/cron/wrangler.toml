@@ -10,3 +10,4 @@ crons = ["0 * * * *"] # 1時間ごと等、用途に合わせる
 binding = "mochiuni_stats_db"
 database_name = "mochiuni-stats-db"
 database_id = "68d26a0c-24ba-45b0-9136-6f2d1debae2c"
+migrations_dir = "../../migrations"

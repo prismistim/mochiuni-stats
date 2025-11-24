@@ -1,7 +1,14 @@
 /* eslint-disable import/no-anonymous-default-export */
 import { drizzle } from 'drizzle-orm/d1'
 import * as schema from '../../../src/db/schema'
-import { D1Database } from '@cloud'
+import dayjs from 'dayjs'
+import timezone from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
+import 'dayjs/locale/ja';
+import team from '../../../team.json'
+import { desc, eq } from 'drizzle-orm';
 
 type RawData =
   | { type: 'point', value: string }
@@ -10,7 +17,13 @@ type RawData =
   | { type: 'created_at', value: string }
   | { type: 'impression', value: string }
 
-class PointElementHandler implements HTMLRewriterDocumentContentHandlers {
+dayjs.extend(utc);
+dayjs.extend(timezone)
+dayjs.extend(customParseFormat)
+dayjs.extend(isSameOrAfter)
+dayjs.locale('ja')
+
+  class PointElementHandler implements HTMLRewriterElementContentHandlers {
   private current = "";
   
   constructor(private readonly rawData: RawData[]) {}
@@ -24,7 +37,7 @@ class PointElementHandler implements HTMLRewriterDocumentContentHandlers {
   }
 }
 
-class NameElementHandler implements HTMLRewriterDocumentContentHandlers {
+class NameElementHandler implements HTMLRewriterElementContentHandlers {
   private current = "";
   
   constructor(private readonly rawData: RawData[]) {}
@@ -40,7 +53,7 @@ class NameElementHandler implements HTMLRewriterDocumentContentHandlers {
   }
 }
 
-class CountryElementHandler implements HTMLRewriterDocumentContentHandlers {
+class CountryElementHandler implements HTMLRewriterElementContentHandlers {
   constructor(private readonly rawData: RawData[]) {}
 
   element(element: Element) {
@@ -50,7 +63,7 @@ class CountryElementHandler implements HTMLRewriterDocumentContentHandlers {
   }
 }
 
-class DateTimeHanlder implements HTMLRewriterDocumentContentHandlers {
+class DateTimeHanlder implements HTMLRewriterElementContentHandlers {
   private current = ''
   constructor(private readonly rawData: RawData[]) {}
 
@@ -66,7 +79,7 @@ class DateTimeHanlder implements HTMLRewriterDocumentContentHandlers {
 }
 
 
-class ImpresionElementHandler implements HTMLRewriterDocumentContentHandlers {
+class ImpresionElementHandler implements HTMLRewriterElementContentHandlers {
   private current = "";
   
   constructor(private readonly rawData: RawData[]) {}
@@ -143,31 +156,38 @@ export default {
 
   async scheduled (_event, env: CronEnv, _ctx): Promise<void> {
     const db = drizzle(env.mochiuni_stats_db)
-    const workNo = 230
-    const data = await this.fetchWorkPage(workNo)
-    if (data.length === 0) return;
 
-    // TODO: workテーブルから該当する作品のIDを取得する必要があります。
-    // ここでは仮に workId: 1 としていますが、実際には registerNo から work.id を引く処理が必要です。
-    // const targetWork = await db.select().from(schema.work).where(eq(schema.work.registerNo, workNo)).get();
-    // if (!targetWork) { ... create work ... }
-    const workId = 1; 
+    for (const targetWorkNo of team.workNo) {
+      const data = await this.fetchWorkPage(targetWorkNo)
+      if (data.length === 0) return;
+  
+      // TODO: すでに登録されているレコードの最終投稿日時を取得。同じものが取得されればスキップする
+      const lastRecord = await db.select().from(schema.impression).where(eq(schema.impression.workNo, targetWorkNo)).orderBy(desc(schema.impression.postedAt)).limit(1)
+  
+      const impressions =data.filter((d) => {
+        return lastRecord.length === 0 || dayjs(d.created_at, ' YYYY年MM月DD日 HH:mm ', 'ja', true).isAfter(dayjs(lastRecord[0]?.postedAt))
+      }).map((d) => {
+        return {
+          workNo: targetWorkNo,
+          // TODO: hashの生成ロジックが必要です。ユニークな識別子として何を使うか決める必要があります。
+          hash: crypto.randomUUID(), 
+          name: d.name,
+          country: d.country,
+          point: parseInt(d.point) || 0, // 数値に変換
+          isVote: 0,
+          comment: d.impression.replace(/\0/g, '').trim(),
+          postedAt: dayjs(d.created_at, ' YYYY年MM月DD日 HH:mm ', 'ja', true).toDate(), // Dateオブジェクトに変換
+          fetchedAt: dayjs().toDate()
+        }
+      })
 
-    const records = data.map((d) => ({
-      workId: workId,
-      // TODO: hashの生成ロジックが必要です。ユニークな識別子として何を使うか決める必要があります。
-      hash: crypto.randomUUID(), 
-      name: d.name,
-      country: d.country,
-      point: parseInt(d.point) || 0, // 数値に変換
-      comment: d.impression,
-      // postedAt: new Date(d.created_at), // 日付形式のパースが必要
-      fetchedAt: new Date()
-    }));
-
-    // バッチインサート
-    if (records.length > 0) {
-      await db.insert(schema.impression).values(records);
+      if (impressions.length > 0) {
+        try {
+          await db.insert(schema.impression).values(impressions);
+        } catch (e) {
+          console.error('Failed to insert records:', e);
+        }
+      }
     }
   }
 }
