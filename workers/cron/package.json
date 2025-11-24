@@ -1,0 +1,18 @@
+{
+  "name": "workers",
+  "module": "src/index.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "wrangler dev --test-scheduled",
+    "cf-typegen": "wrangler types --env-interface CronEnv ./cloudflare-env.d.ts"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20251117.0",
+    "@types/bun": "latest",
+    "wrangler": "^4.48.0"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}

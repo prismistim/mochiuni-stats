@@ -1,0 +1,68 @@
+{
+  "name": "もちもちゆにばーす",
+  "no": 84,
+  "concepts": [
+    {
+      "id": 1,
+      "name": "てんてる",
+      "isLeader": true,
+      "isFinalStriker": false,
+      "ratioPoint": 14,
+      "iconUrl": "https://manbow.nothing.sh/event/images_bof21/upload/img_member1_1490084_20250726221835.jpg"
+    },
+    {
+      "id": 2,
+      "name": "めもも",
+      "isLeader": false,
+      "isFinalStriker": false,
+      "ratioPoint": 14,
+      "iconUrl": "https://manbow.nothing.sh/event/images_bof21/upload/img_member2_1490084_20250726221835.jpg"
+    },
+    {
+      "id": 3,
+      "name": "snowsphere",
+      "isLeader": false,
+      "isFinalStriker": true,
+      "ratioPoint": 0,
+      "iconUrl": "https://manbow.nothing.sh/event/images_bof21/upload/img_member3_1490084_20250726221835.jpg"
+    },
+    {
+      "id": 4,
+      "name": "kitsunet",
+      "isLeader": false,
+      "isFinalStriker": false,
+      "ratioPoint": 16,
+      "iconUrl": "https://manbow.nothing.sh/event/images_bof21/upload/img_member4_1490084_20250726221835.jpg"
+    }
+  ],
+  "works": [
+    {
+      "no": 172,
+      "conceptId": 1,
+      "title": "夜明けのヴォヤージュコメット",
+      "genre": "Fusion_Jazz",
+      "thumbUrl": "https://manbow.nothing.sh/event/images/stagefile_noimage.png"
+    },
+    {
+      "no": 189,
+      "conceptId": 2,
+      "title": "わんだー☆ゆにばーす",
+      "genre": "Hyper Pop",
+      "thumbUrl": "https://manbow.nothing.sh/event/upload/1490172_20251012214731_title.png"
+    },
+    {
+      "no": 226,
+      "conceptId": 4,
+      "title": "Mentally Unstable",
+      "genre": "yandere Base Music",
+      "thumbUrl": "https://manbow.nothing.sh/event/upload/1490226_20251018000900_title.png"
+    },
+    {
+      "no": 230,
+      "conceptId": 3,
+      "title": "nil (sketch_250831)",
+      "genre": "SOUNDTRACK",
+      "thumbUrl": "https://manbow.nothing.sh/event/upload/1490230_20251019172229_title.png"
+    }
+  ]
+}

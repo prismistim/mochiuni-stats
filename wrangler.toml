@@ -1,0 +1,16 @@
+name = "mochiuni-stat"
+main = ".open-next/worker.js"
+compatibility_date = "2025-03-01"
+compatibility_flags = ["nodejs_compat", "global_fetch_strictly_public"]
+
+[assets]
+binding = "ASSETS"
+directory = ".open-next/assets"
+
+[observability]
+enabled = true
+
+[[d1_databases]]
+binding = "mochiuni_stats_db"
+database_name = "mochiuni-stats-db"
+database_id = "68d26a0c-24ba-45b0-9136-6f2d1debae2c"

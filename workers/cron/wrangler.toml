@@ -1,0 +1,12 @@
+name = "mochiuni-stats-cron"
+main = "src/index.ts"
+compatibility_date = "2025-03-01"
+compatibility_flags = ["nodejs_compat"]
+
+[triggers]
+crons = ["0 * * * *"] # 1時間ごと等、用途に合わせる
+
+[[d1_databases]]
+binding = "mochiuni_stats_db"
+database_name = "mochiuni-stats-db"
+database_id = "68d26a0c-24ba-45b0-9136-6f2d1debae2c"
